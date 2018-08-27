@@ -37,7 +37,6 @@ class Search extends React.Component
 
     }
 
-    //Initialize the State
     _loadFilms(pageLoad) {
    
         if (this._searchText.length > 0)
