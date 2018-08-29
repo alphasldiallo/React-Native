@@ -1,5 +1,5 @@
 import React from "react"
-import {View, Text, Button, TextInput, StyleSheet, FlatList, StatusBar, ActivityIndicator, Keyboard} from 'react-native'
+import {View, Text, Button, TextInput, StyleSheet, FlatList, StatusBar, ActivityIndicator, Keyboard, TouchableOpacity} from 'react-native'
 import films from './Helpers/filmsData'
 import FilmItems from './filmItems'
 import {getFilmsFromApiWithSearchedText} from './API/TMDBApi'
@@ -24,6 +24,11 @@ class Search extends React.Component
         this.setState({searchText: t})
     }
 
+    _displayDetailForFilm = (idFilm) => {
+        console.log("Display film with id " + idFilm)
+        this.props.navigation.navigate("FilmDetail", {idFilm: idFilm})
+    }
+     
     _searchInit()
     {
         Keyboard.dismiss()
@@ -32,7 +37,7 @@ class Search extends React.Component
         this.setState ({
             films: []
         })
-        console.log(this._page)
+        //console.log(this._page)
         this._loadFilms(this._page)
 
     }
@@ -70,11 +75,14 @@ class Search extends React.Component
 
     render = function ()
     {
+        //this.props.navigation.navigate('filmDetails')
+        //console.log(this.props)
         return (
+
             <View style={styles.main_container}>
             <StatusBar
                 barStyle="dark-content"
-                hidden = {true}
+                hidden = {false}
             />
             <Text>Search bar</Text>
             <TextInput style={styles.textinput} placeholder='Titre du film' onSubmitEditing = {(() => this._searchInit()) } onChangeText = {(text) => this._searchTextInputChange(text)} 
@@ -85,7 +93,7 @@ class Search extends React.Component
             //KeyExtractor define the ID of the item
             keyExtractor = {(item) => item.id.toString()}
             //ES6 way to write: renderItem = {function ({item}) {return <Text>{item.title}</Text>}}
-            renderItem = {({item})=> <FilmItems film = {item} />}
+            renderItem = {({item})=> <FilmItems film = {item} displayDetailForFilm={this._displayDetailForFilm} />}
             onEndReachedThreshold = {0.5}
             onEndReached = {() => {this._page++;  this._loadFilms(this._page) }}
             />
@@ -98,8 +106,7 @@ class Search extends React.Component
 const styles = StyleSheet.create(
     {
         main_container: {
-            flex: 1,
-            marginTop: 25
+            flex: 1
           },
           textinput: {
             marginLeft: 5,
